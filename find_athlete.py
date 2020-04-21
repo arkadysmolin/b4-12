@@ -53,32 +53,32 @@ def convert_birth_date(db_str): # переводим строчное значе
 	return bd
 
 def nearest_atlet(user, session):	# поиск подходящих атЛетов
-	atlets_list = session.query(Atletes).all()
+	atlets_list = session.query(Atletes).all() # подтягиваем всех атлетов
 
-	user_height = user.height
+	user_height = user.height # начальные установки для поиска подходящих по росту
 	min_different_in_height=9
 	atlet_id_h = None
 
 	user_bd = convert_birth_date(user.birthdate) # переводим строчное значение даты в дату для юзера
-	min_different_in_bd=None
+	min_different_in_bd=None # начальные установки для поиска подходящих по дате рождения
 	atlet_id_bd = None
 
 	for atlet in atlets_list: # перебираем все записи с атлетами
-		atlet_id, atlet_h, atlet_bd = atlet.id, atlet.height, atlet.birthdate
+		atlet_id, atlet_h, atlet_bd = atlet.id, atlet.height, atlet.birthdate # вытаскиваем в переменные данные из таблицы атлетов
 		if atlet_h is not None: # если у атлета указан рост
 			if abs(atlet_h-user_height)<min_different_in_height: # сравниваем разницу в дате рождения с минимальной
-				min_different_in_height=abs(atlet_h-user_height) 
+				min_different_in_height=abs(atlet_h-user_height) # присваивает новые значения минимальной разницы
 				atlet_id_h=atlet_id
 		
-		if atlet_bd is not None: # если у атлета не указано дата рождения
+		if atlet_bd is not None: # если у атлета указана дата рождения
 			atlet_bd_date=convert_birth_date(atlet_bd) # переводим строчное значение даты в дату для атлета
 			if min_different_in_bd is None: # если минимальная разница в дате рождения ещё отсутствует
 				min_different_in_bd=abs(atlet_bd_date-user_bd)
 			if abs(atlet_bd_date-user_bd)<min_different_in_bd: # сравниваем разницу в росте с минимальной
-				min_different_in_bd=abs(atlet_bd_date-user_bd)
+				min_different_in_bd=abs(atlet_bd_date-user_bd) # присваивает новые значения минимальной разницы
 				atlet_id_bd=atlet_id
 
-	return atlet_id_h, atlet_id_bd
+	return atlet_id_h, atlet_id_bd # возвращаем ID атлетов подходящих по росту и по дате рождения
 
 
 
