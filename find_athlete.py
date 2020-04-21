@@ -16,26 +16,16 @@ def connect_db():
 class Atletes(Base): # структура базы атлетов
     __tablename__ = 'athelete'
     id = sa.Column(sa.Integer, primary_key=True)
-    age = sa.Column(sa.Integer)
     birthdate = sa.Column(sa.Text)
-    gender = sa.Column(sa.Text)
     height = sa.Column(sa.Float)
-    weight = sa.Column(sa.Integer)
     name = sa.Column(sa.Text)
-    gold_medals = sa.Column(sa.Integer)
-    silver_medals = sa.Column(sa.Integer)
-    bronze_medals = sa.Column(sa.Integer)
-    total_medals = sa.Column(sa.Integer)
-    sport = sa.Column(sa.Text)
-    country = sa.Column(sa.Text)
+
 
 class User(Base): # структура базы пользователей
     __tablename__ = 'user'
     id = sa.Column(sa.String(36), primary_key=True)
     first_name = sa.Column(sa.Text)
     last_name = sa.Column(sa.Text)
-    gender = sa.Column(sa.Text)
-    email = sa.Column(sa.Text)
     birthdate = sa.Column(sa.Text)
     height = sa.Column(sa.Float)
 
