@@ -56,17 +56,17 @@ def nearest_atlet(user, session):	# поиск подходящих атЛето
 	for atlet in atlets_list: # перебираем все записи с атлетами
 		atlet_id, atlet_h, atlet_bd = atlet.id, atlet.height, atlet.birthdate # вытаскиваем в переменные данные из таблицы атлетов
 		if atlet_h is not None: # если у атлета указан рост
-			if abs(atlet_h-user_height)<min_different_in_height: # сравниваем разницу в дате рождения с минимальной
+			if abs(atlet_h-user_height)<min_different_in_height: # сравниваем разницу в росте с минимальной
 				min_different_in_height=abs(atlet_h-user_height) # присваивает новые значения минимальной разницы
-				atlet_id_h=atlet_id
+				atlet_id_h=atlet_id # сохраняем ID текущего атлета
 		
 		if atlet_bd is not None: # если у атлета указана дата рождения
 			atlet_bd_date=convert_birth_date(atlet_bd) # переводим строчное значение даты в дату для атлета
 			if min_different_in_bd is None: # если минимальная разница в дате рождения ещё отсутствует
 				min_different_in_bd=abs(atlet_bd_date-user_bd)
-			if abs(atlet_bd_date-user_bd)<min_different_in_bd: # сравниваем разницу в росте с минимальной
+			if abs(atlet_bd_date-user_bd)<min_different_in_bd: # сравниваем разницу в дате рождения с минимальной
 				min_different_in_bd=abs(atlet_bd_date-user_bd) # присваивает новые значения минимальной разницы
-				atlet_id_bd=atlet_id
+				atlet_id_bd=atlet_id # сохраняем ID текущего атлета
 
 	return atlet_id_h, atlet_id_bd # возвращаем ID атлетов подходящих по росту и по дате рождения
 
