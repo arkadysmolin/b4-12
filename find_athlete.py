@@ -13,7 +13,7 @@ def connect_db():
     session = sessionmaker(engine)
     return session()
 
-class Atletes(Base):
+class Atletes(Base): # структура базы атлетов
     __tablename__ = 'athelete'
     id = sa.Column(sa.Integer, primary_key=True)
     age = sa.Column(sa.Integer)
@@ -29,7 +29,7 @@ class Atletes(Base):
     sport = sa.Column(sa.Text)
     country = sa.Column(sa.Text)
 
-class User(Base):
+class User(Base): # структура базы пользователей
     __tablename__ = 'user'
     id = sa.Column(sa.String(36), primary_key=True)
     first_name = sa.Column(sa.Text)
@@ -39,42 +39,42 @@ class User(Base):
     birthdate = sa.Column(sa.Text)
     height = sa.Column(sa.Float)
 
-def find_user(user_id, session):
+def find_user(user_id, session): # поиск пользователя по id
     user = session.query(User).filter(User.id == user_id).first()
     if user:
     	print ("Найден пользователь: ",user.first_name, user.birthdate, user.height)
-    else:
+    else: # если пользователь не найден
     	user = None;
     return user
 
-def convert_birth_date(db_str):
+def convert_birth_date(db_str): # переводим строчное значение даты в дату
 	bd_parts_str = db_str.split("-")
 	bd = datetime.date(int(bd_parts_str[0]), int(bd_parts_str[1]), int(bd_parts_str[2]))
 	return bd
 
-def nearest_atlet(user, session):	
+def nearest_atlet(user, session):	# поиск подходящих атЛетов
 	atlets_list = session.query(Atletes).all()
 
 	user_height = user.height
 	min_different_in_height=9
 	atlet_id_h = None
 
-	user_bd = convert_birth_date(user.birthdate)
+	user_bd = convert_birth_date(user.birthdate) # переводим строчное значение даты в дату для юзера
 	min_different_in_bd=None
 	atlet_id_bd = None
 
 	for atlet in atlets_list:
 		atlet_id, atlet_h, atlet_bd = atlet.id, atlet.height, atlet.birthdate
 		if atlet_h is not None:
-			if abs(atlet_h-user_height)<min_different_in_height:
-				min_different_in_height=abs(atlet_h-user_height)
+			if abs(atlet_h-user_height)<min_different_in_height: # сравниваем разницу в дате рождения с минимальной
+				min_different_in_height=abs(atlet_h-user_height) 
 				atlet_id_h=atlet_id
 		
 		if atlet_bd is not None:
-			atlet_bd_date=convert_birth_date(atlet_bd)
+			atlet_bd_date=convert_birth_date(atlet_bd) # переводим строчное значение даты в дату для атлета
 			if min_different_in_bd is None:
 				min_different_in_bd=abs(atlet_bd_date-user_bd)
-			if abs(atlet_bd_date-user_bd)<min_different_in_bd:
+			if abs(atlet_bd_date-user_bd)<min_different_in_bd: # сравниваем разницу в росте с минимальной
 				min_different_in_bd=abs(atlet_bd_date-user_bd)
 				atlet_id_bd=atlet_id
 
@@ -84,26 +84,26 @@ def nearest_atlet(user, session):
 
 
 def main():
-    session = connect_db()
-    qty=session.query(User).count()
+    session = connect_db() # устанавливаем сессию
+    qty=session.query(User).count() # считаем количество пользователей
     print ("Введи идентификатор (от 6 до {}): ".format(qty+5))
-    user_id_input = input()
-    if not user_id_input.isdigit():
+    user_id_input = input() 
+    if not user_id_input.isdigit(): # проверяем, что ввели цифровые значения
     	print("Не хочешь - как хочешь!")
     else:
-	    user_id_input_int=int(user_id_input)
-	    user = find_user(user_id_input_int, session)
-	    if not user:
+	    user_id_input_int=int(user_id_input) # переводим строку в число
+	    user = find_user(user_id_input_int, session) # ищем пользователя
+	    if not user: # если пользователи нет
 	    	print("Такого пользователя нет!\n Обрати внимание на доступные идентификаторы.")
 	    else:
-		    bd_date=convert_birth_date(user.birthdate)
+		    bd_date=convert_birth_date(user.birthdate) # конвертируем строку в дату
 
-		    nearest_atlets = nearest_atlet(user,session)
+		    nearest_atlets = nearest_atlet(user,session) # ищем подходящих атлетов
 
-		    atlet_h=session.query(Atletes).filter(Atletes.id == nearest_atlets[0]).first()
+		    atlet_h=session.query(Atletes).filter(Atletes.id == nearest_atlets[0]).first() # этот подошел по росту
 		    print ("Подходящий атлет по росту: \n id - {} \n имя - {} \n рост - {}".format(atlet_h.id, atlet_h.name, atlet_h.height))
 
-		    atlet_bd=session.query(Atletes).filter(Atletes.id == nearest_atlets[1]).first()
+		    atlet_bd=session.query(Atletes).filter(Atletes.id == nearest_atlets[1]).first() # этот подошел по дате рождения
 		    print ("Подходящий атлет по дате рождения: \n id - {} \n имя - {} \n дата рождения- {}".format(atlet_bd.id, atlet_bd.name, atlet_bd.birthdate))
 
 
